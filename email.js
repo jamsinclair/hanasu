@@ -18,14 +18,14 @@ var transporter =  nodemailer.createTransport(connectionString)
  *         The email to send the SMS message data to
  */
 function forwardSms(phoneNumber, message, recipient) {
+  recipient = recipient || env.EMAIL_RECIPIENT
+
   var mailOptions = {
     from: `"Hanasu App" <${recipient}>`,
     to: recipient,
-    subject: `Message from: ${number}`,
+    subject: `Message from: ${phoneNumber}`,
     html: `<b>Message:</b> <br> <p>${message}</p>`
   }
-
-  recipient = recipient || env.EMAIL_RECIPIENT
 
   transporter.sendMail(mailOptions, function(error, info){
     if (error) {
@@ -36,4 +36,6 @@ function forwardSms(phoneNumber, message, recipient) {
   });
 }
 
-module.exports = forwardSms
+module.exports = {
+  forwardSms: forwardSms
+}
