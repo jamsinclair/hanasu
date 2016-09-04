@@ -2,7 +2,9 @@ require('./env-check')
 
 var express = require('express')
 var morgan = require('morgan')
+var csrf = require('csurf')
 var bodyParser = require('body-parser')
+var cookieParser = require('cookie-parser')
 var email = require('./email')
 var twilio = require('./twilio-api')
 var app = express()
@@ -13,6 +15,16 @@ app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({
     extended: true
 }));
+
+// Setup Request Logging
+app.use(morgan('combined'))
+
+// Mount Webhook router before CSRF is added
+app.use('/webhook', createWebhookRouter())
+
+// Mount the CSRF middlewares
+app.use(cookieParser())
+app.use(csrf({ cookie: true }))
 
 // Set Security HTTP Headers
 app.use(function (req, res, next) {
@@ -26,27 +38,13 @@ app.use(function (req, res, next) {
   next()
 })
 
-// views is directory for all template files
+// Set the template directory and the templating engine used
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 
-// Setup Request Logging
-app.use(morgan('combined'))
-
 app.get('/', function(request, response) {
-  response.render('pages/index');
-});
-
-app.post('/api/receive', function(request, response) {
-  var data = request.body;
-
-  if (twilio.validateRequest(request)) {
-    // We are certain the request has come from twilio, forward the sms to the configured email
-    response.json({ status: 'ok' });
-    email.forwardSms(data.From, data.Body);
-  } else {
-    response.sendStatus(403)
-  }
+  // Pass the csrfToken to the form view
+  response.render('pages/index', { csrfToken: request.csrfToken() });
 });
 
 app.post('/api/send', function(request, response) {
@@ -84,3 +82,22 @@ app.post('/api/send', function(request, response) {
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
 });
+
+function createWebhookRouter() {
+  var router = new express.Router()
+
+  router.post('/receive', function(request, response) {
+    var data = request.body;
+
+    if (twilio.validateRequest(request)) {
+      // We are certain the request has come from twilio, forward the sms to the configured email
+      response.json({ status: 'ok' });
+      email.forwardSms(data.From, data.Body);
+    } else {
+      console.log('Invalid twilio webhook received')
+      response.sendStatus(403)
+    }
+  });
+
+  return router
+}

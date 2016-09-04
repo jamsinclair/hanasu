@@ -10,6 +10,7 @@
         <div class="alert alert-success hidden" role="alert">Message Sent Successfully</div>
         <div class="alert alert-danger hidden" role="alert">Message Failed</div>
         <form id="sms-form">
+            <input type="hidden" id="csrf_token" value="<%= csrfToken %>">
             <div class="form-group">
                 <label for="secret">Secret</label>
                 <input type="password" class="form-control" id="secret" placeholder="secret" required>

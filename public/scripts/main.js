@@ -57,17 +57,18 @@ $(function() {
     var secretVal = $('#secret').val();
     var toVal = $('#to').val();
     var bodyVal = $('#body').val();
+    var csrfToken = $('#csrf_token').val();
 
     e.preventDefault();
 
     showInfoAlert();
 
     // Validate all fields have values before sending message
-    if (secretVal.length && toVal.length && bodyVal.length) {
+    if (secretVal.length && toVal.length && bodyVal.length && csrfToken.length) {
       $.ajax({
         type: 'POST',
         url: '/api/send',
-        data: { secret: secretVal, to: toVal, body: bodyVal },
+        data: { secret: secretVal, to: toVal, body: bodyVal, _csrf: csrfToken },
         success: showSuccessAlert,
         error: showErrorAlert
       });
