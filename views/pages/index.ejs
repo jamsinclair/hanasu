@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <% include ../partials/header.ejs %>
+  </head>
+  <body>
+    <% include ../partials/nav.ejs %>
+    <div class="container">
+        <div class="alert alert-info hidden" role="alert">Trying to send message</div>
+        <div class="alert alert-success hidden" role="alert">Message Sent Successfully</div>
+        <div class="alert alert-danger hidden" role="alert">Message Failed</div>
+        <form id="sms-form">
+            <div class="form-group">
+                <label for="secret">Secret</label>
+                <input type="password" class="form-control" id="secret" placeholder="secret" required>
+            </div>
+            <div class="form-group">
+                <label for="to">To</label>
+                <input type="tel" class="form-control" id="to" placeholder="to" required>
+            </div>
+            <div class="form-group">
+                <label for="body">Message</label>
+                <textarea id="body" class="form-control" rows="3" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+        </form>
+    </div>
+  </body>
+</html>
