@@ -14,6 +14,18 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 
+// Set Security HTTP Headers
+app.use(function (req, res, next) {
+  res.set({
+    'X-XSS-Protection': '1; mode=block',
+    'X-Frame-Options': 'SAMEORIGIN',
+    'X-Content-Type-Options': 'nosniff',
+    'Content-Security-Policy': "default-src 'self' *.googleapis.com maxcdn.bootstrapcdn.com"
+  })
+
+  next()
+})
+
 // views is directory for all template files
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
