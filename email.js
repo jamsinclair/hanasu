@@ -1,9 +1,7 @@
 var nodemailer = require('nodemailer')
 var env = process.env
 
-// @TODO make protocol configurabel aswell? *shrug*
-var connectionString = `smtps://${env.EMAIL_USER}:${env.EMAIL_PASSWORD}@${env.EMAIL_HOSTNAME}`
-var transporter =  nodemailer.createTransport(connectionString)
+var transporter =  nodemailer.createTransport(env.EMAIL_CONNECTION_STRING)
 
 /**
  * Forwards the SMS sender's phone number and message to the email recipient
