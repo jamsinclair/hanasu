@@ -11,7 +11,7 @@ var app = express()
 
 app.set('port', (process.env.PORT || 5000))
 
-app.use(express.static(__dirname + '/public'))
+app.use(express.static(`${__dirname}/public`))
 app.use(bodyParser.urlencoded({
   extended: true
 }))
@@ -39,7 +39,7 @@ app.use(function (req, res, next) {
 })
 
 // Set the template directory and the templating engine used
-app.set('views', __dirname + '/views')
+app.set('views', `${__dirname}/views`)
 app.set('view engine', 'ejs')
 
 app.get('/', function (request, response) {
@@ -65,7 +65,7 @@ app.post('/api/send', function (request, response) {
   twilio.sendSms(data.to, data.body)
     .then(function (responseData) {
       if (responseData.error_code) {
-        console.log(err)
+        console.log(responseData.error_code)
         response.sendStatus(400)
         return
       }

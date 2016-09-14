@@ -23,5 +23,8 @@
   "devDependencies": {
     "standard": "^8.0.0"
   },
+  "standard": {
+    "globals": [ "$" ]
+  },
   "license": "MIT"
 }
