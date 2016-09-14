@@ -1,7 +1,7 @@
 var nodemailer = require('nodemailer')
 var env = process.env
 
-var transporter =  nodemailer.createTransport(env.EMAIL_CONNECTION_STRING)
+var transporter = nodemailer.createTransport(env.EMAIL_CONNECTION_STRING)
 
 /**
  * Forwards the SMS sender's phone number and message to the email recipient
@@ -15,7 +15,7 @@ var transporter =  nodemailer.createTransport(env.EMAIL_CONNECTION_STRING)
  * @param  {String} [recipient = process.env.EMAIL_RECIPIENT]
  *         The email to send the SMS message data to
  */
-function forwardSms(phoneNumber, message, recipient) {
+function forwardSms (phoneNumber, message, recipient) {
   recipient = recipient || env.EMAIL_RECIPIENT
 
   var mailOptions = {
@@ -25,13 +25,13 @@ function forwardSms(phoneNumber, message, recipient) {
     html: `<b>Message:</b> <br> <p>${message}</p>`
   }
 
-  transporter.sendMail(mailOptions, function(error, info){
+  transporter.sendMail(mailOptions, function (error, info) {
     if (error) {
       return console.error(error)
     }
 
     console.log('Message sent: ' + info.response)
-  });
+  })
 }
 
 module.exports = {

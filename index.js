@@ -9,12 +9,12 @@ var email = require('./email')
 var twilio = require('./twilio-api')
 var app = express()
 
-app.set('port', (process.env.PORT || 5000));
+app.set('port', (process.env.PORT || 5000))
 
-app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname + '/public'))
 app.use(bodyParser.urlencoded({
-    extended: true
-}));
+  extended: true
+}))
 
 // Setup Request Logging
 app.use(morgan('combined'))
@@ -39,15 +39,15 @@ app.use(function (req, res, next) {
 })
 
 // Set the template directory and the templating engine used
-app.set('views', __dirname + '/views');
-app.set('view engine', 'ejs');
+app.set('views', __dirname + '/views')
+app.set('view engine', 'ejs')
 
-app.get('/', function(request, response) {
+app.get('/', function (request, response) {
   // Pass the csrfToken to the form view
-  response.render('pages/index', { csrfToken: request.csrfToken() });
-});
+  response.render('pages/index', { csrfToken: request.csrfToken() })
+})
 
-app.post('/api/send', function(request, response) {
+app.post('/api/send', function (request, response) {
   var data = request.body
 
   if (!data.to || !data.secret || !data.body) {
@@ -63,7 +63,7 @@ app.post('/api/send', function(request, response) {
   }
 
   twilio.sendSms(data.to, data.body)
-    .then(function(responseData) {
+    .then(function (responseData) {
       if (responseData.error_code) {
         console.log(err)
         response.sendStatus(400)
@@ -73,31 +73,31 @@ app.post('/api/send', function(request, response) {
       console.log(`Text message sent successfully to ${data.to}`)
       response.json({status: 'ok'})
     })
-    .catch(function(err) {
+    .catch(function (err) {
       console.log(err)
       response.sendStatus(400)
     })
-});
+})
 
-app.listen(app.get('port'), function() {
-  console.log('Node app is running on port', app.get('port'));
-});
+app.listen(app.get('port'), function () {
+  console.log('Node app is running on port', app.get('port'))
+})
 
-function createWebhookRouter() {
+function createWebhookRouter () {
   var router = new express.Router()
 
-  router.post('/receive', function(request, response) {
-    var data = request.body;
+  router.post('/receive', function (request, response) {
+    var data = request.body
 
     if (twilio.validateRequest(request)) {
       // We are certain the request has come from twilio, forward the sms to the configured email
-      response.json({ status: 'ok' });
-      email.forwardSms(data.From, data.Body);
+      response.json({ status: 'ok' })
+      email.forwardSms(data.From, data.Body)
     } else {
       console.log('Invalid twilio webhook received')
       response.sendStatus(403)
     }
-  });
+  })
 
   return router
 }

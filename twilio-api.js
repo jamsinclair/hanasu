@@ -12,11 +12,11 @@ var client = new twilio.RestClient(env.TWILIO_ACCOUNT_SID, env.TWILIO_AUTH_TOKEN
  *
  * @return {promise} A promise that resovles on whether the sms sending was successful or not
  */
-function sendSms(phoneNumber, message) {
+function sendSms (phoneNumber, message) {
   return client.sendMessage({
-      to: phoneNumber,
-      from: env.TWILIO_NUMBER,
-      body: message
+    to: phoneNumber,
+    from: env.TWILIO_NUMBER,
+    body: message
   })
 }
 
@@ -28,7 +28,7 @@ function sendSms(phoneNumber, message) {
  *
  * @return {boolean} Returns whether it is a valid request or not from Twilio
  */
-function validateRequest(req) {
+function validateRequest (req) {
   var options = { url: env.TWILIO_WEBHOOK }
 
   return twilio.validateExpressRequest(req, env.TWILIO_AUTH_TOKEN, options)
