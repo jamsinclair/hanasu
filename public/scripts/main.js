@@ -80,6 +80,9 @@ $(function () {
     $('.alert-success').toggleClass('hidden', false)
   }
 
+  /**
+   * Form Handler, if all input and csrf fields have values it will send request
+   */
   $('#sms-form').submit(function (e) {
     var secretVal = $('#secret').val()
     var toVal = $('#to').val()
