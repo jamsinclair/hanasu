@@ -15,15 +15,42 @@ $(function () {
     return decodeURIComponent(results[2].replace(/\+/g, ' '))
   }
 
-  var secretParam = getParameterByName('secret')
-  var toParam = getParameterByName('to')
+  function hasLocalStorageSupport () {
+    var mod = 'supportsLocalStorage'
+    var localStorage = window.localStorage
 
-  if (secretParam) {
-    $('#secret').val(secretParam)
+    try {
+      localStorage.setItem(mod, mod)
+      localStorage.removeItem(mod)
+      return true
+    } catch (e) {
+      return false
+    }
   }
 
+  // Retrieve a default 'send to' phone number from url
+  // e.g. hanasu.app.com/?to=64123456789
+  var toParam = getParameterByName('to')
+
   if (toParam) {
+    // Use the url value for the send to input, prefix with international phone number '+'
     $('#to').val('+' + toParam)
+  }
+
+  // Saves the app's secret to localStorage
+  // Will default to using that value for the 'secret' input field.
+  // On blur of the secret input field, updates the secret value in localStorage
+  if (hasLocalStorageSupport()) {
+    var secretKey = 'HANASU_SECRET'
+    var existingSecret = window.localStorage.getItem(secretKey)
+
+    if (existingSecret) {
+      $('#secret').val(existingSecret)
+    }
+
+    $('#secret').on('blur', function () {
+      window.localStorage.setItem(secretKey, $(this).val())
+    })
   }
 
   /**
